@@ -14,53 +14,83 @@ import NewProductDialog from "@/app/newProduct";
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [term, setTerm] = useState(0);
+  const [amount, setAmount] = useState<number | "">("");
+  const [term, setTerm] = useState<number | "">("");  
   const [result, setResult] = useState<any>(null);
-
   const [showDialog, setShowDialog] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
-    annual_rate: 0,
-    min_amount: 0,
-    max_amount: 0,
-    min_term: 0,
-    max_term: 0,
+    annual_rate: "" as number | "",
+    min_amount: "" as number | "",
+    max_amount: "" as number | "",
+    min_term: "" as number | "",
+    max_term: "" as number | "",
   });
+  
 
   useEffect(() => {
     getProducts().then(setProducts);
   }, []);
 
   const handleSimulate = async () => {
-    if (!selected || amount <= 0 || term <= 0) {
+    if (!selected || typeof amount !== "number" || amount <= 0 || typeof term !== "number" || term <= 0) {
       toast.error("Completa todos los campos correctamente para simular.");
       return;
     }
-
+  
+    if (!Number.isInteger(amount)) {
+      toast.error("El monto no debe tener decimales. Usá números sin puntos.");
+      return;
+    }
+  
+    if (!Number.isInteger(term)) {
+      toast.error("El plazo no debe tener decimales. Usá números sin puntos.");
+      return;
+    }
+  
+    const selectedProduct = products.find(p => p.name === selected);
+    if (!selectedProduct) {
+      toast.error("Producto seleccionado no encontrado.");
+      return;
+    }
+  
+    if (amount < selectedProduct.min_amount || amount > selectedProduct.max_amount) {
+      toast.error(
+        `Monto fuera de rango. Debe estar entre ${selectedProduct.min_amount} y ${selectedProduct.max_amount}.`
+      );
+      return;
+    }
+  
+    if (term < selectedProduct.min_term || term > selectedProduct.max_term) {
+      toast.error(
+        `Plazo fuera de rango. Debe estar entre ${selectedProduct.min_term} y ${selectedProduct.max_term} meses.`
+      );
+      return;
+    }
+  
     try {
       const res = await simulateLoan({
         product_name: selected,
         amount,
         term,
       });
-
+  
       if (res.detail) {
         toast.error(`Error: ${res.detail}`);
         return;
       }
-
+  
       setResult(res);
       toast.success("Simulación exitosa ");
     } catch (err) {
       toast.error("Error al simular el préstamo. Verifica el servidor.");
       console.error(err);
     }
-  };
+  };  
 
   const handleSaveProduct = async () => {
     const camposIncompletos = Object.entries(newProduct).some(
-      ([, val]) => val === "" || val === 0
+      ([, val]) => val === "" || val === null 
     );
 
     if (camposIncompletos) {
@@ -77,11 +107,11 @@ export default function Home() {
       setShowDialog(false);
       setNewProduct({
         name: "",
-        annual_rate: 0,
-        min_amount: 0,
-        max_amount: 0,
-        min_term: 0,
-        max_term: 0,
+        annual_rate: "",
+        min_amount: "",
+        max_amount: "",
+        min_term: "",
+        max_term: "",
       });
     } catch (error) {
       toast.error("Error al guardar el producto. Verifica el servidor.");

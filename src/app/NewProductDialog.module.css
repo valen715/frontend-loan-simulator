@@ -1,0 +1,72 @@
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.dialogBox {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  height: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dialogTitle {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.dialogField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+}
+
+.label {
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.input {
+  padding: 0.35rem;
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.buttonPrimary,
+.buttonCancel {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.buttonPrimary {
+  background-color: #0070f3;
+  color: white;
+}
+
+.buttonCancel {
+  background-color: #ccc;
+  color: #333;
+}

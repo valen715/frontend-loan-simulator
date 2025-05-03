@@ -1,15 +1,15 @@
 "use client";
 
-import styles from "@/app/page.module.css";
+import styles from "./NewProductDialog.module.css"; // 👈 nuevo import
 
 type Props = {
   newProduct: {
     name: string;
-    annual_rate: number;
-    min_amount: number;
-    max_amount: number;
-    min_term: number;
-    max_term: number;
+    annual_rate: number | "";
+    min_amount: number | "";
+    max_amount: number | "";
+    min_term: number | "";
+    max_term: number | "";
   };
   setNewProduct: React.Dispatch<React.SetStateAction<any>>;
   onClose: () => void;
@@ -19,8 +19,8 @@ type Props = {
 const fieldLabels: Record<string, string> = {
   name: "Nombre del producto",
   annual_rate: "Tasa efectiva anual (%)",
-  min_amount: "Monto mínimo",
-  max_amount: "Monto máximo",
+  min_amount: "Monto mínimo (COP)",
+  max_amount: "Monto máximo (COP)",
   min_term: "Plazo mínimo (meses)",
   max_term: "Plazo máximo (meses)",
 };
@@ -47,12 +47,15 @@ export default function NewProductDialog({
                 setNewProduct((prev: any) => ({
                   ...prev,
                   [key]:
-                    typeof val === "number"
-                      ? Number(e.target.value)
-                      : e.target.value,
+                    key === "name"
+                      ? e.target.value
+                      : e.target.value === ""
+                        ? ""
+                        : Number(e.target.value),
                 }))
               }
             />
+
           </div>
         ))}
 
